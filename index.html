@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cititel Hotel Pekanbaru — Company Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Oswald', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            navy: { 50:'#f0f3f9', 100:'#dce3f0', 200:'#b9c7e1', 300:'#8da3cc', 400:'#6a84b8', 500:'#4a6aa3', 600:'#385289', 700:'#2d4270', 800:'#1a2d52', 900:'#0f1d38', 950:'#0a1428' },
+            gold: { 50:'#fdf9ef', 100:'#faf0d5', 200:'#f4deaa', 300:'#edc776', 400:'#e5ac47', 500:'#d4942a', 600:'#b87520', 700:'#96581e', 800:'#7a4820', 900:'#653d1f', 950:'#381e0d' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes blurIn { from{opacity:0;filter:blur(12px)} to{opacity:1;filter:blur(0)} }
+    @keyframes scaleIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes marqueeScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    .anim-fade { animation: fadeIn 0.8s ease-out both; }
+    .anim-slide-up { animation: slideUp 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+    .anim-blur { animation: blurIn 1s ease-out both; }
+    .anim-scale { animation: scaleIn 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+    .anim-float { animation: float 4s ease-in-out infinite; }
+
+    .d1{animation-delay:100ms}.d2{animation-delay:200ms}.d3{animation-delay:300ms}
+    .d4{animation-delay:400ms}.d5{animation-delay:500ms}.d6{animation-delay:600ms}.d7{animation-delay:700ms}
+
+    .gold-line {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, #d4942a, #edc776, #d4942a);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+    .gold-line-thin {
+      width: 40px; height: 1px;
+      background: linear-gradient(90deg, #d4942a, #edc776);
+    }
+
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #c9a96e, #f0d48a, #c9a96e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-hover { transition: all 0.5s cubic-bezier(0.16,1,0.3,1); }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 60px -12px rgba(10,20,40,0.15); }
+
+    .img-zoom { overflow: hidden; }
+    .img-zoom img { transition: transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .img-zoom:hover img { transform: scale(1.08); }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Modal */
+    .modal-overlay { display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px; }
+    .modal-overlay.active { display:flex; }
+
+    /* Lightbox */
+    .lightbox { display:none; position:fixed; inset:0; z-index:110; background:rgba(0,0,0,0.92); align-items:center; justify-content:center; }
+    .lightbox.active { display:flex; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#f8fafc; }
+    ::-webkit-scrollbar-thumb { background:#c9a96e; border-radius:3px; }
+
+    /* Gallery masonry helper */
+    .gallery-item { break-inside: avoid; margin-bottom: 16px; }
+  </style>
+</head>
+<body class="bg-white text-navy-950 overflow-x-hidden">
+
+  <!-- ==================== LIGHTBOX ==================== -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <button onclick="closeLightbox()" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-10">
+      <iconify-icon icon="lucide:x" class="text-xl"></iconify-icon>
+    </button>
+    <button onclick="event.stopPropagation();navLB(-1)" class="absolute left-4 md:left-8 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-10">
+      <iconify-icon icon="lucide:chevron-left" class="text-xl"></iconify-icon>
+    </button>
+    <img id="lbImg" src="" alt="" class="max-w-[92vw] max-h-[88vh] object-contain rounded-xl" onclick="event.stopPropagation()">
+    <button onclick="event.stopPropagation();navLB(1)" class="absolute right-4 md:right-8 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-10">
+      <iconify-icon icon="lucide:chevron-right" class="text-xl"></iconify-icon>
+    </button>
+    <div class="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/50 text-xs font-medium" id="lbCounter"></div>
+  </div>
+
+  <!-- ==================== ROOM DETAIL MODAL ==================== -->
+  <div id="roomModal" class="modal-overlay" onclick="closeRoomModal()">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto shadow-2xl anim-scale" onclick="event.stopPropagation()">
+      <div id="roomModalContent"></div>
+    </div>
+  </div>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#home" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-lg bg-gold-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <iconify-icon icon="lucide:building-2" class="text-white text-base"></iconify-icon>
+          </div>
+          <div class="leading-tight">
+            <span class="font-serif font-semibold text-lg text-white nav-text-switch" id="logoText">Cititel</span>
+            <span class="block text-[9px] font-bold uppercase tracking-[0.2em] text-white/50 nav-sub-switch" id="logoSub">Hotel Pekanbaru</span>
+          </div>
+        </a>
+        <!-- Desktop Menu -->
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="#home" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all">Home</a>
+          <a href="#tentang" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all">Tentang Hotel</a>
+          <a href="#kamar" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all">Tipe Kamar</a>
+          <a href="#fasilitas" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all">Fasilitas</a>
+          <a href="#galeri" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all">Galeri</a>
+          <a href="#kontak" class="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all">Kontak</a>
+        </div>
+        <!-- Mobile Toggle -->
+        <button id="menuBtn" onclick="toggleMenu()" class="lg:hidden w-10 h-10 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center text-white menu-icon-switch transition-all">
+          <iconify-icon icon="lucide:menu" class="text-lg" id="menuIcon"></iconify-icon>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="lg:hidden hidden bg-white border-t border-slate-100 shadow-xl">
+      <div class="max-w-7xl mx-auto px-5 py-4 space-y-1">
+        <a href="#home" onclick="toggleMenu()" class="block py-3 px-4 rounded-xl text-sm font-medium text-navy-900 hover:bg-slate-50 transition-colors">Home</a>
+        <a href="#tentang" onclick="toggleMenu()" class="block py-3 px-4 rounded-xl text-sm font-medium text-navy-900 hover:bg-slate-50 transition-colors">Tentang Hotel</a>
+        <a href="#kamar" onclick="toggleMenu()" class="block py-3 px-4 rounded-xl text-sm font-medium text-navy-900 hover:bg-slate-50 transition-colors">Tipe Kamar</a>
+        <a href="#fasilitas" onclick="toggleMenu()" class="block py-3 px-4 rounded-xl text-sm font-medium text-navy-900 hover:bg-slate-50 transition-colors">Fasilitas</a>
+        <a href="#galeri" onclick="toggleMenu()" class="block py-3 px-4 rounded-xl text-sm font-medium text-navy-900 hover:bg-slate-50 transition-colors">Galeri</a>
+        <a href="#kontak" onclick="toggleMenu()" class="block py-3 px-4 rounded-xl text-sm font-medium text-navy-900 hover:bg-slate-50 transition-colors">Kontak</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://media-public.dekoruma.com/article/2025/04/Background-Kamar-Aesthetic-Bernuansa-Alam.webp" alt="Cititel Hotel" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-b from-navy-950/70 via-navy-950/50 to-navy-950/80"></div>
+    </div>
+    <!-- Decorative -->
+    <div class="absolute top-1/4 left-10 w-80 h-80 bg-gold-500/10 rounded-full blur-[120px] anim-float"></div>
+    <div class="absolute bottom-1/4 right-10 w-60 h-60 bg-gold-400/8 rounded-full blur-[100px] anim-float" style="animation-delay:2s"></div>
+
+    <div class="relative max-w-4xl mx-auto px-5 text-center">
+      <div class="anim-fade">
+        <span class="inline-flex items-center gap-3 border border-gold-500/30 rounded-full px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.25em] text-gold-300 mb-8">
+          <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
+          Since 2008 — Pekanbaru, Riau
+          <span class="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
+        </span>
+      </div>
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-white leading-[1.1] anim-blur d2">
+        Kemewahan yang<br>
+        <span class="text-gold-gradient italic">Menyentuh Hati</span>
+      </h1>
+      <div class="gold-line mx-auto mt-8 anim-slide-up d4"></div>
+      <p class="mt-8 text-base md:text-lg text-white/60 font-light leading-relaxed max-w-2xl mx-auto anim-slide-up d5">
+        Cititel Hotel Pekanbaru menghadirkan harmoni antara kenyamanan modern dan keanggunan budaya Nusantara di jantung kota Pekanbaru.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-4 anim-slide-up d6">
+        <a href="#kamar" class="inline-flex items-center gap-2 bg-gold-500 text-navy-950 font-bold text-xs uppercase tracking-wider px-8 py-4 rounded-xl hover:bg-gold-400 transition-all duration-300 group">
+          Jelajahi Kamar
+          <iconify-icon icon="lucide:arrow-right" class="text-sm group-hover:translate-x-1 transition-transform"></iconify-icon>
+        </a>
+        <a href="#tentang" class="inline-flex items-center gap-2 border border-white/20 text-white font-bold text-xs uppercase tracking-wider px-8 py-4 rounded-xl hover:bg-white/10 hover:border-white/30 transition-all duration-300">
+          Tentang Kami
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TENTANG HOTEL ==================== -->
+  <section id="tentang" class="py-24 lg:py-32 bg-white">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Image Side -->
+        <div class="relative scroll-reveal">
+          <div class="img-zoom rounded-3xl overflow-hidden shadow-2xl">
+            <img src="https://i.ibb.co.com/7d5WsF3V/aula.jpg" alt="Cititel Hotel Exterior" class="w-full h-[500px] lg:h-[600px] object-cover">
+          </div>
+          <!-- Floating Card -->
+          <div class="absolute -bottom-6 -right-4 md:right-8 bg-white rounded-2xl shadow-xl p-5 border border-slate-100 anim-float">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-xl bg-gold-50 flex items-center justify-center">
+                <iconify-icon icon="lucide:award" class="text-gold-500 text-2xl"></iconify-icon>
+              </div>
+              <div>
+                <div class="font-serif text-2xl font-semibold text-navy-900">3-Star</div>
+                <div class="text-xs text-slate-400 font-medium">Official Rating</div>
+              </div>
+            </div>
+          </div>
+          <!-- Gold accent line -->
+          <div class="absolute -top-3 -left-3 w-20 h-20 border-t-2 border-l-2 border-gold-400/50 rounded-tl-3xl"></div>
+        </div>
+        <!-- Text Side -->
+        <div class="scroll-reveal">
+          <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-600 mb-4">
+            <span class="gold-line-thin"></span>
+            Tentang Hotel
+          </span>
+          <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-navy-900 leading-[1.15]">
+            Warisan Hospitality<br>di <span class="italic text-gold-gradient">Pekanbaru</span>
+          </h2>
+          <div class="gold-line mt-6 mb-8"></div>
+          <p class="text-slate-500 font-light leading-[1.8] mb-5">
+            Berdiri sejak tahun 2008, Cititel Hotel Pekanbaru telah menjadi salah satu ikon hospitalitas di Provinsi Riau. Dengan 105 kamar yang dirancang elegan, hotel kami menawarkan pengalaman menginap premium yang memadukan kemewahan modern dengan keindahan budaya Nusantara.
+          </p>
+          <p class="text-slate-500 font-light leading-[1.8] mb-8">
+            Berlokasi strategis di Jalan Jenderal Sudirman, hotel kami memberikan akses mudah ke pusat bisnis, destinasi wisata, dan bandara Sultan Syarif Kasim II. Setiap detail dari arsitektur hingga layanan kami dirancang untuk membuat tamu merasa dihargai dan nyaman.
+          </p>
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-6">
+            <div class="text-center p-4 rounded-2xl bg-slate-50">
+              <div class="font-serif text-3xl font-semibold text-navy-900">105</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">Kamar</div>
+            </div>
+            <div class="text-center p-4 rounded-2xl bg-slate-50">
+              <div class="font-serif text-3xl font-semibold text-navy-900">17+</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">Tahun</div>
+            </div>
+            <div class="text-center p-4 rounded-2xl bg-slate-50">
+              <div class="font-serif text-3xl font-semibold text-navy-900">4.6</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">Rating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TIPE KAMAR ==================== -->
+  <section id="kamar" class="py-24 lg:py-32 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 scroll-reveal">
+        <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-600 mb-4">
+          <span class="gold-line-thin"></span>
+          Akomodasi
+          <span class="gold-line-thin"></span>
+        </span>
+        <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-navy-900 leading-[1.15]">
+          Tipe <span class="italic text-gold-gradient">Kamar</span>
+        </h2>
+        <div class="gold-line mx-auto mt-6 mb-6"></div>
+        <p class="text-slate-500 font-light leading-relaxed">
+          Lima pilihan kamar eksklusif, masing-masing dirancang untuk memberikan kenyamanan terbaik bagi setiap tamu.
+        </p>
+      </div>
+      <!-- Room Cards Grid -->
+      <div id="roomsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ==================== FASILITAS ==================== -->
+  <section id="fasilitas" class="py-24 lg:py-32 bg-white">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 scroll-reveal">
+        <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-600 mb-4">
+          <span class="gold-line-thin"></span>
+          Fasilitas
+          <span class="gold-line-thin"></span>
+        </span>
+        <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-navy-900 leading-[1.15]">
+          Fasilitas <span class="italic text-gold-gradient">Premium</span>
+        </h2>
+        <div class="gold-line mx-auto mt-6 mb-6"></div>
+        <p class="text-slate-500 font-light leading-relaxed">
+          Kelengkapan fasilitas bertaraf internasional untuk memenuhi setiap kebutuhan Anda selama menginap.
+        </p>
+      </div>
+      <!-- Facilities Grid -->
+      <div id="facilitiesGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+    </div>
+  </section>
+
+  <!-- ==================== GALERI ==================== -->
+  <section id="galeri" class="py-24 lg:py-32 bg-navy-950 relative overflow-hidden">
+    <div class="absolute top-0 left-1/3 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-[150px]"></div>
+    <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-navy-700/30 rounded-full blur-[120px]"></div>
+    <div class="relative max-w-7xl mx-auto px-5 lg:px-8">
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 scroll-reveal">
+        <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-400 mb-4">
+          <span class="gold-line-thin"></span>
+          Galeri
+          <span class="gold-line-thin"></span>
+        </span>
+        <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-[1.15]">
+          Keindahan Setiap <span class="italic text-gold-gradient">Sudut</span>
+        </h2>
+        <div class="gold-line mx-auto mt-6 mb-6"></div>
+        <p class="text-white/40 font-light leading-relaxed">
+          Jelajahi setiap sudut hotel melalui koleksi foto profesional kami.
+        </p>
+      </div>
+      <!-- Gallery Grid -->
+      <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+    </div>
+  </section>
+
+  <!-- ==================== KONTAK ==================== -->
+  <section id="kontak" class="py-24 lg:py-32 bg-white">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 scroll-reveal">
+        <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gold-600 mb-4">
+          <span class="gold-line-thin"></span>
+          Kontak
+          <span class="gold-line-thin"></span>
+        </span>
+        <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-navy-900 leading-[1.15]">
+          Hubungi <span class="italic text-gold-gradient">Kami</span>
+        </h2>
+        <div class="gold-line mx-auto mt-6 mb-6"></div>
+        <p class="text-slate-500 font-light leading-relaxed">
+          Tim kami siap membantu Anda. Jangan ragu untuk menghubungi kami kapan saja.
+        </p>
+      </div>
+      <div class="grid lg:grid-cols-5 gap-8 lg:gap-12">
+        <!-- Contact Info -->
+        <div class="lg:col-span-2 space-y-6 scroll-reveal">
+          <div class="bg-slate-50 rounded-2xl p-6 flex items-start gap-4 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center flex-shrink-0">
+              <iconify-icon icon="lucide:map-pin" class="text-gold-600 text-xl"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="font-semibold text-navy-900 text-sm">Alamat</h4>
+              <p class="text-slate-500 text-sm font-light mt-1 leading-relaxed">Jl. Sisingamaharaja No. 32 Pekanbaru, Riau 28116, Indonesia</p>
+            </div>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-6 flex items-start gap-4 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center flex-shrink-0">
+              <iconify-icon icon="lucide:phone" class="text-gold-600 text-xl"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="font-semibold text-navy-900 text-sm">Telepon</h4>
+              <p class="text-slate-500 text-sm font-light mt-1">(+62) 761 36777</p>
+              <p class="text-slate-500 text-sm font-light">+62 813 7841 2951</p>
+            </div>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-6 flex items-start gap-4 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center flex-shrink-0">
+              <iconify-icon icon="lucide:mail" class="text-gold-600 text-xl"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="font-semibold text-navy-900 text-sm">Email</h4>
+              <p class="text-slate-500 text-sm font-light mt-1">info@cititelpekanbaru.com</p>
+              <p class="text-slate-500 text-sm font-light">reservation@cititelpekanbaru.com</p>
+            </div>
+          </div>
+          <div class="bg-slate-50 rounded-2xl p-6 flex items-start gap-4 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center flex-shrink-0">
+              <iconify-icon icon="lucide:clock" class="text-gold-600 text-xl"></iconify-icon>
+            </div>
+            <div>
+              <h4 class="font-semibold text-navy-900 text-sm">Jam Operasional</h4>
+              <p class="text-slate-500 text-sm font-light mt-1">Front Desk: 24 Jam</p>
+              <p class="text-slate-500 text-sm font-light">Reservasi: 08.00 – 22.00 WIB</p>
+            </div>
+          </div>
+        </div>
+        <!-- Map -->
+        <div class="lg:col-span-3 scroll-reveal">
+          <div class="bg-slate-100 rounded-3xl overflow-hidden h-full min-h-[460px] relative border border-slate-200">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.668!2d101.4378!3d0.5071!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMMKwMzAnMjUuNiJTIDEwMcKwMjYnMTYuMSJF!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+              width="100%" height="100%" style="border:0; min-height:460px;" allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              class="grayscale contrast-110 opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+            </iframe>
+            <!-- Overlay Card on Map -->
+            <div class="absolute bottom-5 left-5 right-5 md:left-auto md:right-5 md:w-72 bg-white/95 backdrop-blur-xl rounded-2xl p-5 shadow-xl border border-slate-100">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-9 h-9 rounded-lg bg-gold-500 flex items-center justify-center">
+                  <iconify-icon icon="lucide:building-2" class="text-white text-sm"></iconify-icon>
+                </div>
+                <div>
+                  <div class="font-serif font-semibold text-navy-900 text-sm">Cititel Hotel</div>
+                  <div class="text-[10px] text-slate-400 font-medium">Pekanbaru, Riau</div>
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 font-light leading-relaxed">Jl. Sisingamaharaja No. 32 — Pusat kota, dekat Mall Pekanbaru & Masjid Raya Agung An-Nur</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-navy-950 border-t border-white/5">
+    <!-- Top -->
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 py-16 lg:py-20">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-9 h-9 rounded-lg bg-gold-500 flex items-center justify-center">
+              <iconify-icon icon="lucide:building-2" class="text-white text-base"></iconify-icon>
+            </div>
+            <div class="leading-tight">
+              <span class="font-serif font-semibold text-lg text-white">Cititel</span>
+              <span class="block text-[9px] font-bold uppercase tracking-[0.2em] text-white/30">Hotel Pekanbaru</span>
+            </div>
+          </div>
+          <p class="text-sm text-white/35 font-light leading-relaxed mb-6">
+            Pengalaman menginap premium di jantung kota Pekanbaru dengan sentuhan keanggunan budaya Nusantara.
+          </p>
+          <div class="flex gap-2.5">
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-500/30 hover:bg-gold-500/5 transition-all duration-300">
+              <iconify-icon icon="lucide:instagram" class="text-sm"></iconify-icon>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-500/30 hover:bg-gold-500/5 transition-all duration-300">
+              <iconify-icon icon="lucide:facebook" class="text-sm"></iconify-icon>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-500/30 hover:bg-gold-500/5 transition-all duration-300">
+              <iconify-icon icon="lucide:twitter" class="text-sm"></iconify-icon>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center text-white/40 hover:text-gold-400 hover:border-gold-500/30 hover:bg-gold-500/5 transition-all duration-300">
+              <iconify-icon icon="lucide:youtube" class="text-sm"></iconify-icon>
+            </a>
+          </div>
+        </div>
+        <!-- Navigasi -->
+        <div>
+          <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-5">Navigasi</h4>
+          <ul class="space-y-3">
+            <li><a href="#home" class="text-sm text-white/50 hover:text-gold-400 transition-colors font-light">Home</a></li>
+            <li><a href="#tentang" class="text-sm text-white/50 hover:text-gold-400 transition-colors font-light">Tentang Hotel</a></li>
+            <li><a href="#kamar" class="text-sm text-white/50 hover:text-gold-400 transition-colors font-light">Tipe Kamar</a></li>
+            <li><a href="#fasilitas" class="text-sm text-white/50 hover:text-gold-400 transition-colors font-light">Fasilitas</a></li>
+            <li><a href="#galeri" class="text-sm text-white/50 hover:text-gold-400 transition-colors font-light">Galeri</a></li>
+            <li><a href="#kontak" class="text-sm text-white/50 hover:text-gold-400 transition-colors font-light">Kontak</a></li>
+          </ul>
+        </div>
+        <!-- Layanan -->
+        <div>
+          <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-5">Layanan</h4>
+          <ul class="space-y-3">
+            <li><span class="text-sm text-white/50 font-light">Meeting & Conference</span></li>
+            <li><span class="text-sm text-white/50 font-light">Wedding Reception</span></li>
+            <li><span class="text-sm text-white/50 font-light">Airport Transfer</span></li>
+            <li><span class="text-sm text-white/50 font-light">Laundry Service</span></li>
+            <li><span class="text-sm text-white/50 font-light">Spa & Wellness</span></li>
+          </ul>
+        </div>
+        <!-- Kontak -->
+        <div>
+          <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-5">Kontak</h4>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <iconify-icon icon="lucide:map-pin" class="text-gold-500 mt-0.5 flex-shrink-0 text-sm"></iconify-icon>
+              <span class="text-sm text-white/50 font-light leading-relaxed">Jl. Sisingamaharaja No. 32 Pekanbaru, Riau 28116, Indonesia</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <iconify-icon icon="lucide:phone" class="text-gold-500 flex-shrink-0 text-sm"></iconify-icon>
+              <span class="text-sm text-white/50 font-light">(+62) 761 36777</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <iconify-icon icon="lucide:mail" class="text-gold-500 flex-shrink-0 text-sm"></iconify-icon>
+              <span class="text-sm text-white/50 font-light">info@cititelpekanbaru.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom -->
+    <div class="border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-white/20 font-light">&copy; Cititel Hotel Pekanbaru. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs text-white/20 hover:text-white/40 transition-colors font-light">Privacy Policy</a>
+          <a href="#" class="text-xs text-white/20 hover:text-white/40 transition-colors font-light">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // ===================== DATA =====================
+
+    const roomsData = [
+      {
+        id: 1,
+        name: "Superior Room",
+        shortDesc: "Kamar nyaman 24 m² dengan pemandangan kota, cocok untuk wisatawan bisnis dan leisure.",
+        fullDesc: "Superior Room menawarkan ruang nyaman seluas 24 m² yang dirancang dengan gaya modern minimalis. Dilengkapi tempat tidur queen size dengan kasur premium Sealy Posturepedic, Smart TV 43 inci dengan channel internasional, minibar, brankas pribadi, dan kamar mandi dengan rain shower. Jendela besar menghadap kota Pekanbaru memberikan pencahayaan alami yang optimal. Ideal untuk wisatawan bisnis maupun leisure yang menginginkan kenyamanan fungsional.",
+        images: [
+          "https://picsum.photos/seed/superior-1-main/800/500.jpg",
+          "https://picsum.photos/seed/superior-2-bath/800/500.jpg",
+          "https://picsum.photos/seed/superior-3-view/800/500.jpg",
+          "https://picsum.photos/seed/superior-4-bed/800/500.jpg"
+        ],
+        image: "https://picsum.photos/seed/superior-card-thumb/600/400.jpg",
+        facilities: ["Queen Size Bed", "Smart TV 43\"", "Rain Shower", "Minibar", "Brankas", "Free WiFi", "AC", "Coffee/Tea Maker"],
+        capacity: "2 Dewasa",
+        size: "24 m²"
+      },
+      {
+        id: 2,
+        name: "Deluxe Room",
+        shortDesc: "Kamar luas 32 m² dengan balkon pribadi dan pemandangan kota yang memukau.",
+        fullDesc: "Deluxe Room menghadirkan pengalaman menginap yang lebih luas dengan ruangan seluas 32 m². Dilengkapi tempat tidur king size premium, area duduk terpisah dengan sofa, balkon pribadi dengan pemandangan panorama kota Pekanbaru, dan kamar mandi mewah dengan bathtub serta separate shower. Fasilitas termasuk Smart TV 50 inci, mesin kopi Nespresso, walk-in wardrobe, dan pengharum ruangan otomatis. Pilihan tepat untuk pasangan atau wisatawan yang menghargai ruang ekstra.",
+        images: [
+          "https://picsum.photos/seed/deluxe-1-main/800/500.jpg",
+          "https://picsum.photos/seed/deluxe-2-balcony/800/500.jpg",
+          "https://picsum.photos/seed/deluxe-3-bath/800/500.jpg",
+          "https://picsum.photos/seed/deluxe-4-lounge/800/500.jpg"
+        ],
+        image: "https://picsum.photos/seed/deluxe-card-thumb/600/400.jpg",
+        facilities: ["King Size Bed", "Smart TV 50\"", "Balkon Pribadi", "Bathtub", "Nespresso Machine", "Walk-in Wardrobe", "Sofa Area", "Free WiFi"],
+        capacity: "2 Dewasa",
+        size: "32 m²"
+      },
+      {
+        id: 3,
+        name: "Executive Room",
+        shortDesc: "Kamar eksklusif di lantai premium dengan akses Executive Lounge dan butler service.",
+        fullDesc: "Executive Room terletak di lantai premium hotel dengan akses eksklusif ke Executive Lounge di lantai teratas. Ruangan seluas 40 m² ini dilengkapi tempat tidur king size, ruang kerja lengkap dengan lampu meja ergonomic, dan kamar mandi marmer dengan bathtub rain shower combo. Tamu menikmati hak istimewa berupa sarapan prasmanan di Executive Lounge, afternoon tea, happy hour (17.00–19.00), dan dedicated butler service. Pemandangan sunset dari kamar ini merupakan pengalaman tak terlupakan.",
+        images: [
+          "https://picsum.photos/seed/exec-1-main/800/500.jpg",
+          "https://picsum.photos/seed/exec-2-lounge/800/500.jpg",
+          "https://picsum.photos/seed/exec-3-bath-marble/800/500.jpg",
+          "https://picsum.photos/seed/exec-4-desk/800/500.jpg"
+        ],
+        image: "https://picsum.photos/seed/exec-card-thumb/600/400.jpg",
+        facilities: ["King Size Bed", "Executive Lounge Access", "Butler Service", "Marble Bathroom", "Work Desk", "Smart TV 55\"", "Rain Shower + Tub", "Welcome Amenity"],
+        capacity: "2 Dewasa",
+        size: "40 m²"
+      },
+      {
+        id: 4,
+        name: "Junior Suite",
+        shortDesc: "Suite mewah dengan ruang tamu terpisah, jacuzzi, dan pemandangan panorama kota.",
+        fullDesc: "Junior Suite adalah kategori suite entry-level yang menawarkan kemewahan luar biasa dalam ruangan seluas 56 m². Terdiri dari kamar tidur terpisah, ruang tamu lengkap dengan sofa modular dan coffee table, serta ruang makan kecil. Kamar mandi utama dilengkapi jacuzzi double, separate shower dengan steam function, dan double vanity. Tamu mendapat semua hak akses Executive Lounge plus welcome fruit basket, daily newspaper, dan late check-out hingga pukul 14.00. Pemandangan skyline Pekanbaru dari lantai tinggi menjadi latar sempurna untuk momen berharga.",
+        images: [
+          "https://picsum.photos/seed/jsuite-1-living/800/500.jpg",
+          "https://picsum.photos/seed/jsuite-2-bedroom/800/500.jpg",
+          "https://picsum.photos/seed/jsuite-3-jacuzzi/800/500.jpg",
+          "https://picsum.photos/seed/jsuite-4-view/800/500.jpg"
+        ],
+        image: "https://picsum.photos/seed/jsuite-card-thumb/600/400.jpg",
+        facilities: ["King Size Bed", "Separate Living Room", "Jacuzzi", "Steam Shower", "Dining Area", "Executive Lounge", "Late Check-out", "Welcome Basket"],
+        capacity: "2 Dewasa + 1 Anak",
+        size: "56 m²"
+      },
+      {
+        id: 5,
+        name: "Cititel Suite",
+        shortDesc: "Suite premium tertinggi dengan 2 kamar, ruang kerja, dan layanan butler pribadi 24 jam.",
+        fullDesc: "Cititel Suite adalah puncak kemewahan hotel — suite seluas 85 m² dengan dua kamar tidur (1 master bedroom dan 1 guest room), ruang tamu luas, ruang kerja private, dan pantry kecil. Master bathroom dilengkapi jacuzzi panoramic, rain shower dengan LED chromotherapy, dan heated towel rack. Guest room memiliki kamar mandi sendiri dengan shower. Tamu mendapat dedicated butler 24 jam, limousine airport transfer, complimentary laundry 4 pcs/hari, dan akses penuh Executive Lounge. Suite ini dirancang untuk tamu VVIP, pejabat, atau keluarga yang menginginkan pengalaman hospitalitas tertinggi di Pekanbaru.",
+        images: [
+          "https://picsum.photos/seed/csuit-1-living-grand/800/500.jpg",
+          "https://picsum.photos/seed/csuit-2-master-bed/800/500.jpg",
+          "https://picsum.photos/seed/csuit-3-jacuzzi-pano/800/500.jpg",
+          "https://picsum.photos/seed/csuit-4-dining/800/500.jpg"
+        ],
+        image: "https://picsum.photos/seed/csuit-card-thumb/600/400.jpg",
+        facilities: ["2 Bedrooms", "Private Butler 24h", "Jacuzzi Panoramic", "LED Chromotherapy", "Pantry", "Limousine Transfer", "Free Laundry", "VIP Lounge Access"],
+        capacity: "4 Dewasa",
+        size: "85 m²"
+      }
+    ];
+
+    const facilitiesData = [
+      { id: 1, name: "Kolam Renang Rooftop", desc: "Infinity pool di lantai 12 dengan pemandangan 360° kota Pekanbaru dan pool bar.", icon: "lucide:waves", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 2, name: "Fitness Center 24 Jam", desc: "Pusat kebugaran lengkap dengan peralatan Technogym terbaru dan personal trainer.", icon: "lucide:dumbbell", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 3, name: "Restoran Melayu", desc: "All-day dining menyajikan masakan internasional dan hidangan khas Melayu Riau autentik.", icon: "lucide:utensils-crossed", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 4, name: "Spa & Wellness", desc: "Perawatan tubuh dan kecantikan dengan teknik tradisional Melayu dan terapi modern.", icon: "lucide:flower-2", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 5, name: "Meeting & Ballroom", desc: "7 ruang meeting dan 1 ballroom kapasitas 800 orang untuk konferensi dan pernikahan.", icon: "lucide:presentation", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 6, name: "Executive Lounge", desc: "Lounge eksklusif di lantai teratas dengan sarapan, afternoon tea, dan happy hour.", icon: "lucide:wine", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 7, name: "Business Center", desc: "Fasilitas bisnis lengkap dengan workstation, ruang teleconference, dan sekretaris.", icon: "lucide:briefcase", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 8, name: "Valet Parking", desc: "Layanan parkir valet gratis dan area parkir luas yang aman dengan CCTV 24 jam.", icon: "lucide:car", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" }
+    ];
+
+    const galleryData = [
+      { id: 1, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 2, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 3, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 4, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 5, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 6, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 7, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 8, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 9, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 10, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 11, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" },
+      { id: 12, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39xUcRksHZus--K88L5bk7dzd5c_v-7HKyw&s" }
+    ];
+
+    // ===================== RENDER =====================
+
+    function renderRooms() {
+      const grid = document.getElementById('roomsGrid');
+      grid.innerHTML = roomsData.map((room, i) => `
+        <div class="group bg-white rounded-3xl overflow-hidden border border-slate-100 card-hover scroll-reveal" style="animation-delay:${i * 100}ms">
+          <div class="relative img-zoom h-56">
+            <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+              <div>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-white/60">${room.size}</span>
+                <h3 class="font-serif text-xl font-semibold text-white leading-tight">${room.name}</h3>
+              </div>
+              <div class="w-9 h-9 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center text-white/80 group-hover:bg-gold-500 group-hover:text-white transition-all duration-300">
+                <iconify-icon icon="lucide:arrow-up-right" class="text-sm"></iconify-icon>
+              </div>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-sm text-slate-500 font-light leading-relaxed line-clamp-2 mb-4">${room.shortDesc}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                <iconify-icon icon="lucide:users" class="text-gold-500"></iconify-icon>
+                ${room.capacity}
+              </span>
+              <button onclick="openRoomDetail(${room.id})" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-navy-800 hover:text-gold-600 transition-colors group/btn">
+                Detail
+                <iconify-icon icon="lucide:arrow-right" class="text-xs group-hover/btn:translate-x-1 transition-transform"></iconify-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderFacilities() {
+      const grid = document.getElementById('facilitiesGrid');
+      grid.innerHTML = facilitiesData.map((fac, i) => `
+        <div class="group relative bg-white rounded-2xl overflow-hidden border border-slate-100 card-hover scroll-reveal" style="animation-delay:${i * 80}ms">
+          <div class="relative img-zoom h-44">
+            <img src="${fac.image}" alt="${fac.name}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-navy-950/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4">
+              <div class="w-10 h-10 rounded-xl bg-gold-500/90 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
+                <iconify-icon icon="${fac.icon}" class="text-white text-lg"></iconify-icon>
+              </div>
+            </div>
+          </div>
+          <div class="p-5">
+            <h3 class="font-serif text-base font-semibold text-navy-900 leading-tight">${fac.name}</h3>
+            <p class="mt-2 text-xs text-slate-400 font-light leading-relaxed line-clamp-2">${fac.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      const sizes = [
+        'md:col-span-2 md:row-span-2',
+        '', '',
+        'md:row-span-2', '',
+        '', '',
+        'md:col-span-2', '',
+        '', '', ''
+      ];
+      grid.innerHTML = galleryData.map((img, i) => `
+        <div class="${sizes[i]} group relative overflow-hidden rounded-2xl cursor-pointer scroll-reveal" style="animation-delay:${i * 60}ms" onclick="openLB(${i})">
+          <img src="${img.image}" alt="Gallery ${img.id}" class="w-full h-full min-h-[180px] object-cover group-hover:scale-110 transition-transform duration-700">
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+            <div class="w-11 h-11 rounded-full bg-white/0 group-hover:bg-white/20 backdrop-blur-md flex items-center justify-center scale-0 group-hover:scale-100 transition-all duration-300">
+              <iconify-icon icon="lucide:expand" class="text-white text-lg"></iconify-icon>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ===================== ROOM DETAIL MODAL =====================
+
+    function openRoomDetail(id) {
+      const room = roomsData.find(r => r.id === id);
+      if (!room) return;
+      const modal = document.getElementById('roomModal');
+      const content = document.getElementById('roomModalContent');
+      content.innerHTML = `
+        <div class="relative">
+          <!-- Header Images -->
+          <div class="grid grid-cols-2 gap-1 rounded-t-3xl overflow-hidden">
+            ${room.images.map((img, i) => `
+              <div class="relative img-zoom ${i === 0 ? 'col-span-2 h-64' : 'h-44'}">
+                <img src="${img}" alt="${room.name} ${i+1}" class="w-full h-full object-cover">
+              </div>
+            `).join('')}
+          </div>
+          <button onclick="closeRoomModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md hover:bg-black/60 flex items-center justify-center text-white transition-colors">
+            <iconify-icon icon="lucide:x" class="text-lg"></iconify-icon>
+          </button>
+          <!-- Room Name Badge -->
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+            <span class="text-[9px] font-bold uppercase tracking-widest text-gold-300">${room.size} · ${room.capacity}</span>
+            <h3 class="font-serif text-2xl md:text-3xl font-semibold text-white">${room.name}</h3>
+          </div>
+        </div>
+        <div class="p-8">
+          <!-- Quick Info -->
+          <div class="flex flex-wrap gap-3 mb-6">
+            <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-4 py-2.5">
+              <iconify-icon icon="lucide:ruler" class="text-gold-500"></iconify-icon>
+              <span class="text-sm font-medium text-navy-900">${room.size}</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-4 py-2.5">
+              <iconify-icon icon="lucide:users" class="text-gold-500"></iconify-icon>
+              <span class="text-sm font-medium text-navy-900">${room.capacity}</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-4 py-2.5">
+              <iconify-icon icon="lucide:wifi" class="text-gold-500"></iconify-icon>
+              <span class="text-sm font-medium text-navy-900">Free WiFi</span>
+            </div>
+          </div>
+          <!-- Description -->
+          <h4 class="font-serif text-lg font-semibold text-navy-900 mb-3">Tentang Kamar Ini</h4>
+          <p class="text-sm text-slate-500 font-light leading-[1.8] mb-8">${room.fullDesc}</p>
+          <!-- Facilities -->
+          <h4 class="font-serif text-lg font-semibold text-navy-900 mb-4">Fasilitas Kamar</h4>
+          <div class="grid grid-cols-2 gap-2.5">
+            ${room.facilities.map(f => `
+              <div class="flex items-center gap-2.5 py-2 px-3 rounded-lg bg-slate-50">
+                <iconify-icon icon="lucide:check-circle-2" class="text-gold-500 text-sm flex-shrink-0"></iconify-icon>
+                <span class="text-sm text-navy-800 font-light">${f}</span>
+              </div>
+            `).join('')}
+          </div>
+          <!-- Contact CTA -->
+          <div class="mt-8 bg-navy-950 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p class="text-white font-medium text-sm">Tertarik dengan kamar ini?</p>
+              <p class="text-white/40 text-xs font-light mt-0.5">Hubungi resepsionis kami untuk informasi ketersediaan dan tarif.</p>
+            </div>
+            <a href="tel:+62761445888" class="flex-shrink-0 inline-flex items-center gap-2 bg-gold-500 text-navy-950 font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl hover:bg-gold-400 transition-colors">
+              <iconify-icon icon="lucide:phone" class="text-sm"></iconify-icon>
+              Hubungi Kami
+            </a>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRoomModal() {
+      document.getElementById('roomModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ===================== LIGHTBOX =====================
+
+    let lbIndex = 0;
+    function openLB(i) {
+      lbIndex = i;
+      updateLB();
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    function navLB(dir) {
+      lbIndex = (lbIndex + dir + galleryData.length) % galleryData.length;
+      updateLB();
+    }
+    function updateLB() {
+      document.getElementById('lbImg').src = galleryData[lbIndex].image;
+      document.getElementById('lbCounter').textContent = `${lbIndex + 1} / ${galleryData.length}`;
+    }
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('lightbox').classList.contains('active')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navLB(-1);
+        if (e.key === 'ArrowRight') navLB(1);
+      }
+      if (document.getElementById('roomModal').classList.contains('active')) {
+        if (e.key === 'Escape') closeRoomModal();
+      }
+    });
+
+    // ===================== MOBILE MENU =====================
+
+    let menuOpen = false;
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+      document.getElementById('mobileMenu').classList.toggle('hidden', !menuOpen);
+      document.getElementById('menuIcon').setAttribute('icon', menuOpen ? 'lucide:x' : 'lucide:menu');
+    }
+
+    // ===================== NAVBAR SCROLL =====================
+
+    let scrolled = false;
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      const isScrolled = window.scrollY > 60;
+      if (isScrolled === scrolled) return;
+      scrolled = isScrolled;
+
+      if (isScrolled) {
+        nav.style.background = 'rgba(255,255,255,0.97)';
+        nav.style.backdropFilter = 'blur(16px)';
+        nav.style.borderBottom = '1px solid rgba(226,232,240,0.6)';
+        nav.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
+        // Switch text colors
+        document.querySelectorAll('.nav-link').forEach(a => {
+          a.classList.remove('text-white/80','hover:text-white','hover:bg-white/10');
+          a.classList.add('text-navy-700','hover:text-gold-600','hover:bg-slate-50');
+        });
+        document.getElementById('logoText').classList.remove('text-white');
+        document.getElementById('logoText').classList.add('text-navy-900');
+        document.getElementById('logoSub').classList.remove('text-white/50');
+        document.getElementById('logoSub').classList.add('text-slate-400');
+        document.getElementById('menuBtn').classList.remove('text-white','bg-white/10');
+        document.getElementById('menuBtn').classList.add('text-navy-800','bg-slate-100');
+      } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = 'none';
+        nav.style.boxShadow = 'none';
+        document.querySelectorAll('.nav-link').forEach(a => {
+          a.classList.add('text-white/80','hover:text-white','hover:bg-white/10');
+          a.classList.remove('text-navy-700','hover:text-gold-600','hover:bg-slate-50');
+        });
+        document.getElementById('logoText').classList.add('text-white');
+        document.getElementById('logoText').classList.remove('text-navy-900');
+        document.getElementById('logoSub').classList.add('text-white/50');
+        document.getElementById('logoSub').classList.remove('text-slate-400');
+        document.getElementById('menuBtn').classList.add('text-white','bg-white/10');
+        document.getElementById('menuBtn').classList.remove('text-navy-800','bg-slate-100');
+      }
+    });
+
+    // ===================== SCROLL REVEAL =====================
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '0';
+          entry.target.classList.add('anim-slide-up');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    function observeAll() {
+      document.querySelectorAll('.scroll-reveal').forEach(el => obs.observe(el));
+    }
+
+    // ===================== INIT =====================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderRooms();
+      renderFacilities();
+      renderGallery();
+      requestAnimationFrame(observeAll);
+    });
+  </script>
+</body>
+</html>
